@@ -32,25 +32,32 @@ function buildScoringMap(scoring) {
 }
 
 // ---------- LEADERBOARD ----------
-function calculateLeaderboard(teams, scoringMap) {
+function calculateLeaderboard(playerRows, teamRows, scoringMap) {
   const players = {};
 
-  for (let i = 1; i < teams.length; i++) {
-    const [team, owner, stage] = teams[i];
-    if (!team || !owner) continue;
-
-    const points = scoringMap[stage] || 0;
-
-    if (!players[owner]) {
-      players[owner] = {
-        player: owner,
+  // 1. Initialize all players from the Players sheet so they show up immediately
+  for (let i = 1; i < playerRows.length; i++) {
+    const playerName = playerRows[i][0];
+    if (playerName) {
+      players[playerName] = {
+        player: playerName,
         points: 0,
         teams: []
       };
     }
+  }
 
-    players[owner].points += points;
-    players[owner].teams.push(team);
+  // 2. Add team points if owners are assigned
+  for (let i = 1; i < teamRows.length; i++) {
+    const [team, owner, stage] = teamRows[i];
+    if (!team) continue;
+
+    // If an owner is assigned and exists in our player map, calculate points
+    if (owner && players[owner]) {
+      const points = scoringMap[stage] || 0;
+      players[owner].points += points;
+      players[owner].teams.push(team);
+    }
   }
 
   return Object.values(players).sort((a, b) => b.points - a.points);
@@ -59,10 +66,10 @@ function calculateLeaderboard(teams, scoringMap) {
 // ---------- RENDER ----------
 function renderLeaderboard(leaderboard) {
   return leaderboard.map((p, i) => `
-    <div class="card">
+    <div style="padding: 10px 0; border-bottom: 1px solid #1f2a44; last-child { border: none; }">
       <b>#${i + 1} ${p.player}</b> — ${p.points} pts
-      <div class="team">
-        ${p.teams.join(", ")}
+      <div class="team" style="color: #8a99ad; margin-top: 4px;">
+        ${p.teams.length > 0 ? p.teams.join(", ") : "<i>No teams assigned yet (Draft Pending)</i>"}
       </div>
     </div>
   `).join("");
@@ -78,10 +85,9 @@ async function loadData() {
     ]);
 
     const scoringMap = buildScoringMap(scoring);
-    const leaderboard = calculateLeaderboard(teams, scoringMap);
+    const leaderboard = calculateLeaderboard(players, teams, scoringMap);
 
-    document.getElementById("leaderboard").innerHTML =
-      renderLeaderboard(leaderboard);
+    document.getElementById("leaderboard").innerHTML = renderLeaderboard(leaderboard);
 
     document.getElementById("lastUpdated").innerText =
       "Last updated: " + new Date().toLocaleString();
