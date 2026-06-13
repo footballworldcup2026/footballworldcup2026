@@ -14,19 +14,18 @@
   </header>
 
   <main>
-    <!-- Leaderboard Section -->
     <section class="card">
       <h2>📊 Leaderboard</h2>
       <div id="leaderboard">Loading leaderboard...</div>
     </section>
 
-    <!-- Prize Pool Section -->
     <section class="card">
-      <h2>💰 Prize Pool: £15</h2>
-      <ul style="list-style: none; padding: 0; font-size: 14px; opacity: 0.9; line-height: 1.6;">
-        <li>🥇 <b>Winner:</b> £7</li>
-        <li>🥈 <b>Runner-up:</b> £4</li>
-        <li>🥉 <b>Semi-finalists:</b> £2 each</li>
+      <h2>💰 Prize Pool: <span id="totalPrize">Calculating...</span></h2>
+      <ul style="list-style: none; padding: 0; margin: 0; font-size: 14px; opacity: 0.9; line-height: 2;">
+        <li>🥇 <b>Winner:</b> <span id="prizeWinner">...</span></li>
+        <li>🥈 <b>Runner-up:</b> <span id="prizeRunnerUp">...</span></li>
+        <li>🥉 <b>Semi-finalists:</b> <span id="prizeSemi">...</span></li>
+        <li>🥄 <b>Last Place:</b> <span id="prizeLast">...</span></li>
       </ul>
     </section>
   </main>
