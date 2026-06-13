@@ -1,222 +1,30 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #0a0f1c;
-  color: #ffffff;
+  background: #0b1220;
+  color: white;
 }
 
-/* HEADER */
 header {
   text-align: center;
-  padding: 24px;
-  background: linear-gradient(180deg, #111a2e, #0a0f1c);
+  padding: 20px;
+  background: #111a2e;
   border-bottom: 1px solid #1f2a44;
 }
 
-h1 {
-  margin: 0;
-  font-size: 30px;
-  letter-spacing: 0.5px;
+main {
+  padding: 15px;
 }
 
-.subtitle {
-  opacity: 0.7;
-  margin-top: 6px;
-}
-
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  padding: 16px;
-}
-
-/* CARD */
 .card {
   background: #111a2e;
-  border-radius: 14px;
-  padding: 16px;
-  border: 1px solid #1f2a44;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-h2 {
-  margin-top: 0;
-  font-size: 18px;
-  border-bottom: 1px solid #1f2a44;
-  padding-bottom: 10px;
-}
-
-/* LEADERBOARD ROWS */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-td {
-  padding: 12px 10px;
-  border-bottom: 1px solid #1f2a44;
-  font-size: 14px;
-  vertical-align: top;
-}
-
-/* Header row */
-tr:first-child td {
-  font-weight: bold;
-  color: #9fb3ff;
-  background: #0e1628;
-}
-
-/* Rank styling */
-.rank {
-  font-weight: bold;
-  font-size: 16px;
-  width: 40px;
-}
-
-/* Top 3 highlights */
-.gold {
-  background: rgba(255, 215, 0, 0.08);
-}
-
-.silver {
-  background: rgba(192, 192, 192, 0.06);
-}
-
-.bronze {
-  background: rgba(205, 127, 50, 0.06);
-}
-
-/* POINT BADGE */
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  background: #2a3b5f;
-  font-weight: bold;
-}
-
-/* TEAM LIST */
-.team-list {
-  font-size: 12px;
-  opacity: 0.85;
-  line-height: 1.4;
-}
-
-/* FOOTER */
-footer {
-  text-align: center;
-  padding: 14px;
-  opacity: 0.6;
-  font-size: 12px;
-}}
-
-h2 {
-  margin-top: 0;
-  font-size: 18px;
-  border-bottom: 1px solid #223;
-  padding-bottom: 8px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-td, th {
-  padding: 8px;
-  border-bottom: 1px solid #223;
-  font-size: 14px;
-}
-
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-/* BASE CARD */
-.player-card {
-  border-radius: 14px;
   padding: 12px;
-  border: 1px solid #1f2a44;
-  background: #0f172a;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  transition: 0.2s;
-}
-
-.player-card:hover {
-  transform: translateY(-2px);
-}
-
-/* TOP ROW */
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.rank {
-  font-weight: bold;
-  opacity: 0.8;
-}
-
-.name {
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.points {
-  background: #2a3b5f;
-  padding: 4px 8px;
-  border-radius: 20px;
-  font-size: 12px;
-}
-
-/* TEAM CHIPS */
-.teams {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.team-chip {
-  font-size: 11px;
-  padding: 3px 6px;
+  margin-bottom: 12px;
   border-radius: 10px;
-  background: #1f2a44;
-  opacity: 0.9;
+  border: 1px solid #1f2a44;
 }
 
-/* STATUS COLORS */
-.player-card.green {
-  border-color: #22c55e;
-  box-shadow: 0 0 10px rgba(34,197,94,0.25);
-}
-
-.player-card.red {
-  border-color: #ef4444;
-  opacity: 0.9;
-}
-
-.player-card.gold {
-  border-color: #facc15;
-  box-shadow: 0 0 14px rgba(250,204,21,0.35);
-}
-
-.badge {
-  padding: 3px 8px;
-  border-radius: 6px;
+.team {
   font-size: 12px;
-  background: #2a3b5f;
-}
-
-
-
-footer {
-  text-align: center;
-  padding: 15px;
-  opacity: 0.6;
+  opacity: 0.8;
 }
