@@ -1,71 +1,45 @@
 const SHEET_ID = "179t_fUJ_q0bbwxsiXIQcaxV6YLBv6_cXq8rBbq2i9eg";
 
 const URLS = {
-  teams: `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Teams`,
-  players: `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Players`,
-  scoring: `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Scoring`,
+  teams: `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Teams`,
+  players: `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Players`,
+  scoring: `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Scoring`,
 };
 
-// ------------------------------
-// SUPER SAFE FETCH (DEBUG ENABLED)
-// ------------------------------
-async function fetchSheet(url, label) {
-  try {
-    const res = await fetch(url);
-    const text = await res.text();
-
-    if (!text.includes("google.visualization.Query")) {
-      throw new Error(`${label} did not return expected JSON wrapper`);
-    }
-
-    // Extract JSON part from Google response
-    const jsonText = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
-    const json = JSON.parse(jsonText);
-
-    const rows = json.table.rows.map(r =>
-      r.c.map(cell => (cell ? cell.v : ""))
-    );
-
-    return rows;
-  } catch (err) {
-    console.error(`❌ ${label} failed`, err);
-    return null;
-  }
+// ---------- SIMPLE CSV PARSER ----------
+function parseCSV(text) {
+  return text
+    .trim()
+    .split("\n")
+    .map(row => row.split(",").map(cell => cell.replace(/"/g, "").trim()));
 }
-// ------------------------------
-// SCORING MAP
-// ------------------------------
-function buildScoringMap(scoringRows) {
-  if (!scoringRows) return {};
 
+// ---------- FETCH ----------
+async function fetchCSV(url) {
+  const res = await fetch(url);
+  const text = await res.text();
+  return parseCSV(text);
+}
+
+// ---------- SCORING ----------
+function buildScoringMap(scoring) {
   const map = {};
-
-  for (let i = 1; i < scoringRows.length; i++) {
-    const [stage, points] = scoringRows[i];
-    if (!stage) continue;
-    map[stage] = Number(points) || 0;
+  for (let i = 1; i < scoring.length; i++) {
+    const [stage, points] = scoring[i];
+    if (stage) map[stage] = Number(points) || 0;
   }
-
   return map;
 }
 
-// ------------------------------
-// LEADERBOARD LOGIC
-// ------------------------------
+// ---------- LEADERBOARD ----------
 function calculateLeaderboard(teams, scoringMap) {
-  if (!teams) return [];
-
-  const rows = teams.slice(1);
   const players = {};
 
-  for (const row of rows) {
-    const team = row[0];
-    const owner = row[1];
-    const stage = row[2];
-
+  for (let i = 1; i < teams.length; i++) {
+    const [team, owner, stage] = teams[i];
     if (!team || !owner) continue;
 
-    const points = scoringMap[stage] ?? 0;
+    const points = scoringMap[stage] || 0;
 
     if (!players[owner]) {
       players[owner] = {
@@ -76,76 +50,48 @@ function calculateLeaderboard(teams, scoringMap) {
     }
 
     players[owner].points += points;
-    players[owner].teams.push(`${team} (${stage || "Unknown"})`);
+    players[owner].teams.push(team);
   }
 
   return Object.values(players).sort((a, b) => b.points - a.points);
 }
 
-// ------------------------------
-// CARD UI
-// ------------------------------
-function renderLeaderboardCards(leaderboard) {
-  if (!leaderboard.length) {
-    return `<p style="opacity:0.7">No leaderboard data yet</p>`;
-  }
-
-  const maxPoints = Math.max(...leaderboard.map(p => p.points), 1);
-
-  return leaderboard.map((p, i) => {
-    const rank = i + 1;
-
-    let statusClass = "red";
-    if (rank === 1) statusClass = "gold";
-    else if (p.points >= maxPoints * 0.6) statusClass = "green";
-
-    return `
-      <div class="player-card ${statusClass}">
-        <div class="card-top">
-          <div class="rank">#${rank}</div>
-          <div class="name">${p.player}</div>
-          <div class="points">${p.points} pts</div>
-        </div>
-
-        <div class="teams">
-          ${p.teams.map(t => `<span class="team-chip">${t}</span>`).join("")}
-        </div>
+// ---------- RENDER ----------
+function renderLeaderboard(leaderboard) {
+  return leaderboard.map((p, i) => `
+    <div class="card">
+      <b>#${i + 1} ${p.player}</b> — ${p.points} pts
+      <div class="team">
+        ${p.teams.join(", ")}
       </div>
-    `;
-  }).join("");
+    </div>
+  `).join("");
 }
 
-// ------------------------------
-// MAIN LOAD
-// ------------------------------
+// ---------- LOAD ----------
 async function loadData() {
-  const [teams, players, scoring] = await Promise.all([
-  fetchSheet(URLS.teams, "Teams"),
-  fetchSheet(URLS.players, "Players"),
-  fetchSheet(URLS.scoring, "Scoring"),
-]);
+  try {
+    const [teams, players, scoring] = await Promise.all([
+      fetchCSV(URLS.teams),
+      fetchCSV(URLS.players),
+      fetchCSV(URLS.scoring),
+    ]);
 
-  console.log("Teams:", teams);
-  console.log("Players:", players);
-  console.log("Scoring:", scoring);
+    const scoringMap = buildScoringMap(scoring);
+    const leaderboard = calculateLeaderboard(teams, scoringMap);
 
-  // graceful fallback UI
-  if (!teams || !scoring) {
     document.getElementById("leaderboard").innerHTML =
-      `<p style="color:#ef4444">⚠️ Data failed to load. Check Google Sheet sharing (Anyone with link → Viewer)</p>`;
-    return;
+      renderLeaderboard(leaderboard);
+
+    document.getElementById("lastUpdated").innerText =
+      "Last updated: " + new Date().toLocaleString();
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("leaderboard").innerHTML =
+      "<p style='color:red'>Failed to load data</p>";
   }
-
-  const scoringMap = buildScoringMap(scoring);
-  const leaderboard = calculateLeaderboard(teams, scoringMap);
-
-  document.getElementById("leaderboard").innerHTML =
-    `<div class="card-grid">${renderLeaderboardCards(leaderboard)}</div>`;
-
-  document.getElementById("lastUpdated").innerText =
-    "Last updated: " + new Date().toLocaleString();
 }
 
-// ------------------------------
 loadData();
 setInterval(loadData, 60000);
