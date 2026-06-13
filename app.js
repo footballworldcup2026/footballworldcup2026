@@ -96,13 +96,23 @@ async function loadData() {
 
     // Leaderboard UI (better format)
     const leaderboardRows = [
-      ["Player", "Points", "Teams"],
-      ...leaderboard.map(p => [
-        p.player,
-        p.points,
-        p.teams.join(" | ")
-      ])
+  ["#", "Player", "Points", "Teams"],
+  ...leaderboard.map((p, i) => {
+    const rank = i + 1;
+
+    let rowClass = "";
+    if (rank === 1) rowClass = "gold";
+    else if (rank === 2) rowClass = "silver";
+    else if (rank === 3) rowClass = "bronze";
+
+    return [
+      rank,
+      p.player,
+      `<span class="badge">${p.points} pts</span>`,
+      `<div class="team-list">${p.teams.join("<br>")}</div>`
     ];
+  })
+];
 
     document.getElementById("teams").innerHTML = tableHTML(teams);
     document.getElementById("scoring").innerHTML = tableHTML(scoring);
