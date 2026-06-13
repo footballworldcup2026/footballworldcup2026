@@ -1,40 +1,116 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #0b1220;
+  background: #0a0f1c;
   color: #ffffff;
 }
 
+/* HEADER */
 header {
   text-align: center;
-  padding: 20px;
-  background: #111a2e;
-  border-bottom: 1px solid #223;
+  padding: 24px;
+  background: linear-gradient(180deg, #111a2e, #0a0f1c);
+  border-bottom: 1px solid #1f2a44;
 }
 
 h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 30px;
+  letter-spacing: 0.5px;
 }
 
 .subtitle {
   opacity: 0.7;
-  margin-top: 5px;
+  margin-top: 6px;
 }
 
+/* GRID */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 15px;
-  padding: 15px;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 16px;
 }
 
+/* CARD */
 .card {
-  background: #121b2f;
-  border-radius: 12px;
-  padding: 15px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  background: #111a2e;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #1f2a44;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
+
+h2 {
+  margin-top: 0;
+  font-size: 18px;
+  border-bottom: 1px solid #1f2a44;
+  padding-bottom: 10px;
+}
+
+/* LEADERBOARD ROWS */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #1f2a44;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+/* Header row */
+tr:first-child td {
+  font-weight: bold;
+  color: #9fb3ff;
+  background: #0e1628;
+}
+
+/* Rank styling */
+.rank {
+  font-weight: bold;
+  font-size: 16px;
+  width: 40px;
+}
+
+/* Top 3 highlights */
+.gold {
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.silver {
+  background: rgba(192, 192, 192, 0.06);
+}
+
+.bronze {
+  background: rgba(205, 127, 50, 0.06);
+}
+
+/* POINT BADGE */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #2a3b5f;
+  font-weight: bold;
+}
+
+/* TEAM LIST */
+.team-list {
+  font-size: 12px;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 14px;
+  opacity: 0.6;
+  font-size: 12px;
+}}
 
 h2 {
   margin-top: 0;
