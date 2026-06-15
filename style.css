@@ -1,73 +1,55 @@
-/* Import Poppins Font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-color: #0f172a;       /* Deep modern slate/navy midnight background */
-  --card-bg: #1e293b;        /* Crisp card backgrounds */
-  --text-main: #f8fafc;      /* Bright readable text */
-  --text-muted: #94a3b8;     /* Accessible secondary labels */
-  --accent-blue: #3b82f6;    /* Vibrant modern blue for accents */
-  
-  /* High-Contrast Badge Colors */
-  --badge-green-bg: #d1fae5;  /* Soft pastel mint */
-  --badge-green-text: #065f46;/* Deep readable emerald text */
-  --badge-gray-bg: #e2e8f0;
-  --badge-gray-text: #334155;
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-blue: #3b82f6;
+  --badge-green-bg: #d1fae5;
+  --badge-green-text: #065f46;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-main); padding: 16px; }
+.container { max-width: 500px; margin: 0 auto; }
+h1 { text-align: center; font-size: 1.5rem; margin-top: 10px; margin-bottom: 4px; }
+#lastUpdated { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; }
 
-body {
-  font-family: 'Poppins', -apple-system, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  padding: 16px;
-  line-height: 1.5;
-}
-
-/* Header Adjustments */
-h1 {
-  font-weight: 700;
-  font-size: 1.75rem;
-  letter-spacing: -0.025em;
-  text-align: center;
-  margin-top: 10px;
-}
-
-#lastUpdated {
-  color: var(--text-muted);
-  text-align: center;
-  font-size: 0.85rem;
-  margin-bottom: 24px;
-}
-
-/* Leaderboard Section */
-.container {
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
-}
-
-.leaderboard-grid {
+/* 🎛️ Navigation Tabs Styling */
+.tabs-nav {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  background-color: var(--card-bg);
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #334155;
+}
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 10px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.tab-btn.active {
+  background-color: var(--accent-blue);
+  color: #fff;
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
 }
 
-/* Sleek Player Card Layout */
+/* 👥 Player Tile Improvements */
 .player-tile {
   background-color: var(--card-bg);
   border: 1px solid #334155;
@@ -76,13 +58,11 @@ h2 {
   display: flex;
   align-items: center;
   gap: 14px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  margin-bottom: 12px;
 }
-
-/* Smoother Avatars */
 .avatar-initial {
   background-color: var(--accent-blue);
-  color: #ffffff;
+  color: #fff;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -90,74 +70,62 @@ h2 {
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 1.1rem;
-  flex-shrink: 0;
 }
+.player-info { flex-grow: 1; }
+.player-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.player-name { font-weight: 600; }
+.player-pts { font-weight: 700; color: var(--accent-blue); }
 
-.player-info {
-  flex-grow: 1;
-}
-
-.player-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.player-name {
-  font-weight: 600;
-  font-size: 1.05rem;
-}
-
-.player-pts {
-  font-weight: 700;
-  color: var(--accent-blue);
-  font-size: 1.05rem;
-}
-
-/* Clean, Highly Readable Team Badges */
+/* 🧱 Two Separate Rows for Teams */
 .teams-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-direction: column; /* Forces them onto separate rows */
+  gap: 8px; 
 }
-
 .badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Gap between flag image and text */
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-/* State-based styling using dark text on light backgrounds for crisp mobile reading */
-.badge-advancing {
   background-color: var(--badge-green-bg);
   color: var(--badge-green-text);
+  width: max-content; /* Prevents badge from stretching full width */
 }
 
-.badge-eliminated {
-  background-color: #fee2e2;
-  color: #991b1b;
+/* 🎌 Flag Styles */
+.flag-icon {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-.badge-winner {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.badge-pending {
-  background-color: #f1f5f9;
-  color: #475569;
-}
-
-/* Prize Pool Card */
+/* 💰 Clean Prize Tab UI */
 .prize-card {
   background-color: var(--card-bg);
   border: 1px solid #334155;
   border-radius: 12px;
-  padding: 16px;
+  padding: 20px;
 }
+.prize-card h2 { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 15px; }
+.prize-total-banner {
+  background-color: #334155;
+  padding: 12px;
+  text-align: center;
+  font-weight: 700;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+.prize-list { list-style: none; }
+.prize-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #334155;
+}
+.prize-list li:last-child { border-bottom: none; }

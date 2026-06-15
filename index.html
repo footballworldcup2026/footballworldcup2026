@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ljub World Cup Sweepstake 2026</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <header>
+  <div class="container">
     <h1>🏆 Ljub World Cup Sweepstake 2026</h1>
-    <p id="lastUpdated">Loading...</p>
-  </header>
+    <!--div id="lastUpdated">Last updated: Loading...</div-->
 
-  <main>
-    <section class="card">
-      <h2>📊 Leaderboard</h2>
-      <div id="leaderboard">Loading leaderboard...</div>
-    </section>
+    <!-- 📊 Modern Navigation Tabs -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('leaderboard-tab')">📊 Leaderboard</button>
+      <button class="tab-btn" onclick="switchTab('prize-tab')">💰 Prize Pool</button>
+    </div>
 
-    <section class="card">
-      <h2>💰 Prize Pool: <span id="totalPrize">Calculating...</span></h2>
-      <ul style="list-style: none; padding: 0; margin: 0; font-size: 14px; opacity: 0.9; line-height: 2;">
-        <li>🥇 <b>Winner:</b> <span id="prizeWinner">...</span></li>
-        <li>🥈 <b>Runner-up:</b> <span id="prizeRunnerUp">...</span></li>
-        <li>🥉 <b>Semi-finalists:</b> <span id="prizeSemi">...</span></li>
-        <li>🥄 <b>Last Place:</b> <span id="prizeLast">...</span></li>
-      </ul>
-    </section>
-  </main>
+    <!-- 📑 Tab Content Area -->
+    <div id="leaderboard-tab" class="tab-content active">
+      <div id="leaderboard"></div>
+    </div>
+
+    <div id="prize-tab" class="tab-content">
+      <div class="prize-card">
+        <h2>💰 Prize Money Breakdown</h2>
+        <div class="prize-total-banner">
+          Total Prize Pool: <span id="totalPrize">£0</span>
+        </div>
+        <ul class="prize-list">
+          <li><span>🥇 Winner</span> <strong id="prizeWinner">£0</strong></li>
+          <li><span>🥈 Runner-up</span> <strong id="prizeRunnerUp">£0</strong></li>
+          <li><span>🥉 Semi-finalists</span> <strong id="prizeSemi">£0</strong></li>
+          <li><span>🥄 Last Place</span> <strong id="prizeLast">£0</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
