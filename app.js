@@ -48,7 +48,8 @@ function calculateLeaderboard(playerRows, teamRows, scoringMap) {
     const row = playerRows[i];
     if (!row || !row[0]) continue;
     const name = row[0].trim();
-    players[name.toLowerCase()] = { player: name, points: 0, teams: [] };
+    const photo = row[1] ? row[1].trim() : null;
+    players[name.toLowerCase()] = { player: name, photo, points: 0, teams: [] };
   }
 
   const winVal = scoringMap["MatchWin"] || 0;
@@ -83,17 +84,18 @@ function renderLeaderboard(leaderboard) {
   let html = '<div class="leaderboard-grid">';
   leaderboard.forEach((p, i) => {
     const initial = p.player.charAt(0).toUpperCase();
+    const avatarHtml = p.photo
+      ? `<img class="avatar-photo" src="${p.photo}" alt="${p.player}">`
+      : `<div class="avatar-initial">${initial}</div>`;
     
     html += `
       <div class="player-tile">
-        <div class="avatar-initial">${initial}</div>
-        <div class="player-info">
-          <div class="player-header">
-            <span class="player-name">${p.player}</span>
-            <div style="text-align: right;">
-              <span class="player-pts">${p.points} pts</span>
-            </div>
-          </div>
+        <div class="player-header">
+          <span class="player-name">${p.player}</span>
+          <span class="player-pts">${p.points} pts</span>
+        </div>
+        <div class="player-teams-row">
+          ${avatarHtml}
           <div class="teams-container">
             ${p.teams.map(t => {
               const code = FLAG_MAP[t.name.toLowerCase()] || "un";

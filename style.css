@@ -56,9 +56,17 @@ h1 { text-align: center; font-size: 1.5rem; margin-top: 10px; margin-bottom: 4px
   border-radius: 12px;
   padding: 14px;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.player-header { display: flex; justify-content: space-between; }
+.player-name { font-weight: 600; }
+.player-pts { font-weight: 700; color: var(--accent-blue); }
+.player-teams-row {
+  display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 12px;
 }
 .avatar-initial {
   background-color: var(--accent-blue);
@@ -70,11 +78,17 @@ h1 { text-align: center; font-size: 1.5rem; margin-top: 10px; margin-bottom: 4px
   align-items: center;
   justify-content: center;
   font-weight: 600;
+  flex-shrink: 0;
 }
-.player-info { flex-grow: 1; }
-.player-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-.player-name { font-weight: 600; }
-.player-pts { font-weight: 700; color: var(--accent-blue); }
+.avatar-photo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--accent-blue);
+  background-color: #e0f2fe;
+}
 
 /* 🧱 Two Separate Rows for Teams */
 .teams-container {
@@ -103,6 +117,7 @@ h1 { text-align: center; font-size: 1.5rem; margin-top: 10px; margin-bottom: 4px
   object-fit: cover;
   border-radius: 2px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  vertical-align: middle;
 }
 
 /* 💰 Clean Prize Tab UI */
