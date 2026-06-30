@@ -92,6 +92,11 @@ function stageBreakdown(stage, scoringMap) {
   return rows;
 }
 
+// 🔢 Round to 1 decimal and drop a trailing .0 for clean display (group draws give .5s)
+function fmt(n) {
+  return Number(Number(n).toFixed(1));
+}
+
 function calculateLeaderboard(playerRows, teamRows, scoringMap) {
   const players = {};
   for (let i = 1; i < playerRows.length; i++) {
@@ -102,8 +107,9 @@ function calculateLeaderboard(playerRows, teamRows, scoringMap) {
     players[name.toLowerCase()] = { player: name, photo, points: 0, teams: [] };
   }
 
-  const winVal = scoringMap["MatchWin"] || 0;
-  const drawVal = scoringMap["MatchDraw"] || 0;
+  // 🪙 Small frozen group bonus (group stage only)
+  const groupWinVal = scoringMap["GroupWin"] || 0;
+  const groupDrawVal = scoringMap["GroupDraw"] || 0;
 
   for (let i = 1; i < teamRows.length; i++) {
     const row = teamRows[i];
@@ -112,28 +118,34 @@ function calculateLeaderboard(playerRows, teamRows, scoringMap) {
     const team = row[0] || "";
     const owner = row[1] || "";
     const stage = row[2] || "Group";
+    // D/E/F are the FROZEN group-stage record (group only – knockouts use Stage)
     const wins = Number(row[3]) || 0;
     const draws = Number(row[4]) || 0;
-    // 🛑 Grab Losses from column index 5 (6th column in the Google Sheet row)
     const losses = Number(row[5]) || 0;
     // ❌ Elimination flag from column index 6 (column G in the Google Sheet)
     const eliminated = isEliminated(row[6]);
 
     const ownerKey = owner.toLowerCase();
     if (players[ownerKey]) {
-      const matchPoints = (wins * winVal) + (draws * drawVal);
+      const groupBonus = (wins * groupWinVal) + (draws * groupDrawVal);
       const stageRows = stageBreakdown(stage, scoringMap);
       const stagePoints = stageRows.reduce((sum, r) => sum + r.points, 0);
-      players[ownerKey].points += matchPoints + stagePoints;
+      const score = groupBonus + stagePoints;
 
-      // Pass down losses, elimination status and the cumulative points breakdown
       players[ownerKey].teams.push({
         name: team, wins, draws, losses, eliminated, stage,
-        matchPoints, stagePoints, stageRows, total: matchPoints + stagePoints
+        groupBonus, stagePoints, stageRows, score
       });
     }
   }
-  return Object.values(players).sort((a, b) => b.points - a.points);
+
+  // ➕ A player's total is simply both teams added together
+  const list = Object.values(players);
+  list.forEach(p => {
+    p.points = fmt(p.teams.reduce((sum, t) => sum + t.score, 0));
+  });
+
+  return list.sort((a, b) => b.points - a.points);
 }
 
 function renderLeaderboard(leaderboard) {
@@ -166,10 +178,10 @@ function renderLeaderboard(leaderboard) {
                 ? `<span class="stage-pill${t.eliminated ? ' out' : ''}">${t.eliminated ? '✕ ' : ''}${stageLabel}</span>`
                 : '';
 
-              // 🔍 Points breakdown, revealed on click (group match points + cumulative stage bonuses)
+              // 🔍 Points breakdown, revealed on click (group bonus + cumulative stage bonuses)
               const detailsId = `details-${i}-${ti}`;
               const stageRowsHtml = t.stageRows.map(r =>
-                `<div class="detail-row"><span>🏁 ${r.label}</span><span>${r.points} pts</span></div>`
+                `<div class="detail-row"><span>🏁 ${r.label}</span><span>${fmt(r.points)} pts</span></div>`
               ).join('');
 
               return `
@@ -181,9 +193,9 @@ function renderLeaderboard(leaderboard) {
                     <span class="expand-caret">▾</span>
                   </span>
                   <div class="badge-details" id="${detailsId}">
-                    <div class="detail-row"><span>⚽ Group matches (${t.wins}W ${t.draws}D ${t.losses}L)</span><span>${t.matchPoints} pts</span></div>
+                    <div class="detail-row"><span>⚽ Group stage (${t.wins}W ${t.draws}D ${t.losses}L)</span><span>${fmt(t.groupBonus)} pts</span></div>
                     ${stageRowsHtml}
-                    <div class="detail-row total"><span>Total</span><span>${t.total} pts</span></div>
+                    <div class="detail-row total"><span>Total</span><span>${fmt(t.score)} pts</span></div>
                   </div>
                 </div>
               `;
@@ -197,6 +209,59 @@ function renderLeaderboard(leaderboard) {
   return html;
 }
 
+
+// 🧮 Build the Scoring tab: shows each knockout round's bonus, the running total a
+// team banks by reaching it, plus the standard 3/1 group-stage points. Driven live
+// from Scoring so it always matches the real values.
+function renderScoringTable(scoringMap) {
+  const base = STAGE_SEQUENCE.reduce((s, k) => s + (scoringMap[k] || 0), 0);
+
+  const rows = [];
+  let running = 0;
+  STAGE_SEQUENCE.forEach(key => {
+    running += scoringMap[key] || 0;
+    rows.push({ label: STAGE_LABELS[key] || key, inc: scoringMap[key] || 0, cum: running });
+  });
+  ["RunnerUp", "Winner"].forEach(key => {
+    rows.push({ label: STAGE_LABELS[key] || key, inc: scoringMap[key] || 0, cum: base + (scoringMap[key] || 0), final: true });
+  });
+
+  const stageRowsHtml = rows.map(r => `
+    <tr${r.final ? ' class="scoring-final"' : ''}>
+      <td>${r.label}</td>
+      <td class="num">+${fmt(r.inc)}</td>
+      <td class="num cum">${fmt(r.cum)}</td>
+    </tr>`).join('');
+
+  const gw = fmt(scoringMap["GroupWin"] || 0);
+  const gd = fmt(scoringMap["GroupDraw"] || 0);
+
+  return `
+    <div class="scoring-card">
+      <h2>🧮 How points are scored</h2>
+      <p class="scoring-note">Knockout bonuses are <strong>cumulative</strong> — a team banks the bonus for every round it passes. A player's score is simply their <strong>two teams added together</strong>.</p>
+
+      <table class="scoring-table">
+        <thead>
+          <tr><th>Stage reached</th><th class="num">Bonus</th><th class="num">Banked total</th></tr>
+        </thead>
+        <tbody>${stageRowsHtml}</tbody>
+      </table>
+
+      <h3 class="scoring-subhead">⚽ Group stage (standard 3 / 1)</h3>
+      <table class="scoring-table">
+        <thead>
+          <tr><th>Group result</th><th class="num">Points</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Win</td><td class="num">${gw}</td></tr>
+          <tr><td>Draw</td><td class="num">${gd}</td></tr>
+          <tr><td>Loss</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
 
 function updatePrizePoolUI(playerCount, scoringMap) {
   const total = playerCount * (scoringMap["EntryFee"] || 0);
@@ -216,6 +281,7 @@ async function loadData() {
     const leaderboard = calculateLeaderboard(players, teams, scoringMap);
 
     document.getElementById("leaderboard").innerHTML = renderLeaderboard(leaderboard);
+    document.getElementById("scoring").innerHTML = renderScoringTable(scoringMap);
     updatePrizePoolUI(leaderboard.length, scoringMap);
     //document.getElementById("lastUpdated").innerText = "Last updated: " + new Date().toLocaleString('en-GB');
   } catch (err) {

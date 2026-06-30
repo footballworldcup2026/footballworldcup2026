@@ -245,3 +245,51 @@ h1 { text-align: center; font-size: 1.5rem; margin-top: 10px; margin-bottom: 4px
   border-bottom: 1px solid #334155;
 }
 .prize-list li:last-child { border-bottom: none; }
+
+/* 🧮 Scoring Tab */
+.scoring-card {
+  background-color: var(--card-bg);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 20px;
+}
+.scoring-card h2 { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 10px; }
+.scoring-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 16px;
+}
+.scoring-subhead {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 22px 0 10px;
+}
+.scoring-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.scoring-table th {
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 6px 8px;
+  border-bottom: 1px solid #334155;
+}
+.scoring-table td {
+  padding: 9px 8px;
+  border-bottom: 1px solid #1f2b3e;
+  font-weight: 600;
+}
+.scoring-table tr:last-child td { border-bottom: none; }
+.scoring-table .num { text-align: right; }
+.scoring-table .cum { color: var(--accent-blue); font-weight: 700; }
+.scoring-table .scoring-final td {
+  color: var(--text-main);
+}
+.scoring-table .scoring-final .cum { color: #fbbf24; }
+

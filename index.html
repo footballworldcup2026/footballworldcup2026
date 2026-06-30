@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ljub World Cup Sweepstake 2026</title>
-  <link rel="stylesheet" href="style.css?v=1.5.1">
+  <link rel="stylesheet" href="style.css?v=2.3.0">
 </head>
 <body>
   <div class="container">
@@ -14,12 +14,17 @@
     <!-- 📊 Modern Navigation Tabs -->
     <div class="tabs-nav">
       <button class="tab-btn active" onclick="switchTab('leaderboard-tab')">📊 Leaderboard</button>
+      <button class="tab-btn" onclick="switchTab('scoring-tab')">🧮 Scoring</button>
       <button class="tab-btn" onclick="switchTab('prize-tab')">💰 Prize Pool</button>
     </div>
 
     <!-- 📑 Tab Content Area -->
     <div id="leaderboard-tab" class="tab-content active">
       <div id="leaderboard"></div>
+    </div>
+
+    <div id="scoring-tab" class="tab-content">
+      <div id="scoring"></div>
     </div>
 
     <div id="prize-tab" class="tab-content">
@@ -38,6 +43,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=1.5.1"></script>
+  <script src="app.js?v=2.3.0"></script>
 </body>
 </html>
