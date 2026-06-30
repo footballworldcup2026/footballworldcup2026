@@ -65,7 +65,7 @@ h1 { text-align: center; font-size: 1.5rem; margin-top: 10px; margin-bottom: 4px
 .player-pts { font-weight: 700; color: var(--accent-blue); }
 .player-teams-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Keeps avatar fixed at top so it doesn't move when details expand */
   gap: 14px;
 }
 .avatar-initial {
@@ -107,7 +107,108 @@ h1 { text-align: center; font-size: 1.5rem; margin-top: 10px; margin-bottom: 4px
   text-transform: uppercase;
   background-color: var(--badge-green-bg);
   color: var(--badge-green-text);
-  width: max-content; /* Prevents badge from stretching full width */
+  width: 100%; /* Fills team-item so it matches the details panel width */
+  box-sizing: border-box;
+  cursor: pointer; /* Indicates the badge is clickable */
+  user-select: none;
+}
+
+/* 🔍 Click-to-expand points breakdown */
+.team-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;   /* Badge + details share the same width */
+  width: max-content;     /* …sized to whichever of the two is wider */
+  max-width: 100%;
+  gap: 4px;
+}
+.expand-caret {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  margin-left: auto; /* Pin caret to the right edge of the badge */
+  transition: transform 0.2s ease;
+}
+.badge:has(+ .badge-details.open) .expand-caret,
+.badge.open-caret .expand-caret {
+  transform: rotate(180deg);
+}
+.badge-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 8px;
+  background-color: var(--card-bg, #1e293b);
+  text-transform: none;
+  box-sizing: border-box;
+  /* 🎬 Smooth collapse / expand */
+  max-height: 0;
+  opacity: 0;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  margin-top: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease,
+              border-color 0.3s ease, margin-top 0.3s ease;
+}
+.badge-details.open {
+  max-height: 320px;
+  opacity: 1;
+  padding: 8px 12px;
+  border-color: #334155;
+  margin-top: 4px;
+}
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted, #94a3b8);
+}
+.detail-row.total {
+  border-top: 1px solid #334155;
+  padding-top: 4px;
+  margin-top: 2px;
+  color: var(--text, #e2e8f0);
+  font-weight: 700;
+}
+
+/* ❌ Eliminated (knocked out) team badge */
+.badge.eliminated {
+  background-color: #fee2e2;
+  color: #991b1b;
+  opacity: 0.75;
+}
+.badge.eliminated .team-label {
+  text-decoration: line-through;
+}
+/* 🎯 One equal-width pill so every badge lines up */
+.badge .stage-pill {
+  flex: 0 0 8rem; /* Fixed width – never grows or shrinks */
+  width: 8rem;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background-color: #1e40af;
+  color: #dbeafe;
+  padding: 1px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* ❌ Eliminated: same pill, red, showing the round the team went out in */
+.badge .stage-pill.out {
+  background-color: #991b1b;
+  color: #fff;
+}
+/* 🏷️ Keep team names a consistent width so the pills align */
+.badge .team-label {
+  min-width: 5.5rem;
 }
 
 /* 🎌 Flag Styles */
